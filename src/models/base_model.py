@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import TypeVar
-
-from sqlalchemy import TIMESTAMP, func
+from sqlalchemy import TIMESTAMP, func, Column, Integer, Float, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -18,4 +17,14 @@ class Base(DeclarativeBase):
     )
 
 
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column(String, index=True)
+    price = Column(Float)
+    description = Column(String)
+
+
 ModelType = TypeVar("ModelType", bound=Base)
+

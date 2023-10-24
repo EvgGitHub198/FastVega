@@ -2,7 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.project_config import settings
-from routes import get_apps_router
+from config.database.db_helper import db_helper
+from routers.product import router
 
 
 
@@ -12,7 +13,7 @@ def get_application() -> FastAPI:
         debug=settings.DEBUG,
         version=settings.VERSION
     )
-    application.include_router(get_apps_router())
+
 
     application.add_middleware(
         CORSMiddleware,
@@ -21,6 +22,21 @@ def get_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.include_router(router)
+
+    @application.on_event("startup")
+    async def startup_db():
+        session = db_helper.get_scope_session()
+        application.state.db = session
+        try:
+            yield session
+        finally:
+            session.remove()
+
+    @application.on_event("shutdown")
+    async def shutdown_db():
+        await db_helper.engine.dispose()
+
     return application
 
 
