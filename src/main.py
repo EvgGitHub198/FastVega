@@ -6,7 +6,6 @@ from config.database.db_helper import db_helper
 from routers.product import router
 
 
-
 def get_application() -> FastAPI:
     application = FastAPI(
         title=settings.PROJECT_NAME,
