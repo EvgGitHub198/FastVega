@@ -3,8 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.project_config import settings
 from config.database.db_helper import db_helper
-from routers.product import router
-
+from routers.product import router as router_product
+from routers.account import router as router_account
 
 
 def get_application() -> FastAPI:
@@ -22,7 +22,9 @@ def get_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    application.include_router(router)
+    application.include_router(router_product)
+    application.include_router(router_account)
+
 
     @application.on_event("startup")
     async def startup_db():
